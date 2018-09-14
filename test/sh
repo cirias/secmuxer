@@ -1,0 +1,1 @@
+password: {{ resolve "test/sh" | sh "cat %s" }}

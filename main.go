@@ -13,36 +13,38 @@ import (
 	"github.com/pkg/errors"
 )
 
-var (
-	store = flag.String("store", "", "directory of the store")
-)
-
 func main() {
+	store := flag.String("store", "", "directory of the store")
+	password := flag.String("password", "", "password used to decrypt")
 	flag.Parse()
 
-	templateFile := flag.Arg(0)
+	inputFile := flag.Arg(0)
 
-	err := execute(os.Stdout, *store, templateFile)
+	err := execute(os.Stdout, *store, *password, inputFile)
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func execute(w io.Writer, store, filename string) error {
+func execute(w io.Writer, store, password, filename string) error {
 	resolve := func(filename string) string {
 		return filepath.Join(store, filename)
+	}
+	secret := func(filename string) (string, error) {
+		return sh("openssl aes-256-cbc -a -d -in %s -out - -pass pass:%s", resolve(filename), password)
 	}
 	funcMap := template.FuncMap{
 		"resolve": resolve,
 		"sh":      sh,
+		"secret":  secret,
 	}
 
 	t, err := template.New(filepath.Base(filename)).Funcs(funcMap).ParseFiles(filename)
 	if err != nil {
-		log.Fatalln("could not parse template file:", err)
+		return errors.Wrap(err, "could not parse template file")
 	}
 
-	return errors.Wrap(t.Execute(w, &struct{}{}), "could not execute")
+	return errors.Wrap(t.Execute(w, nil), "could not execute")
 }
 
 func sh(cmdformat string, a ...interface{}) (string, error) {
