@@ -1,3 +1,3 @@
-module github.com/cirias/muxer
+module github.com/cirias/secmuxer
 
 require github.com/pkg/errors v0.8.0
