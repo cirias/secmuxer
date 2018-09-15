@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/pkg/errors"
@@ -56,5 +57,5 @@ func sh(cmdformat string, a ...interface{}) (string, error) {
 		return "", errors.Wrapf(err, "could not run sh command: %s", shCmd)
 	}
 
-	return string(stdout), nil
+	return strings.TrimSpace(string(stdout)), nil
 }
