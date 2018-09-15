@@ -5,13 +5,15 @@ import (
 )
 
 func ExampleSh() {
-	execute(os.Stdout, ".", "", "test/sh")
+	f, _ := os.Open("test/sh")
+	execute(f, os.Stdout, ".", "")
 	// Output:
 	// password: password: {{ resolve "test/sh" | sh "cat %s" }}
 }
 
 func ExampleSecret() {
-	execute(os.Stdout, ".", "s9cr9t", "test/secret")
+	f, _ := os.Open("test/secret")
+	execute(f, os.Stdout, ".", "s9cr9t")
 	// Output:
 	// password: password
 }

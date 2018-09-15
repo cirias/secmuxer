@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -19,15 +20,13 @@ func main() {
 	password := flag.String("password", "", "password used to decrypt")
 	flag.Parse()
 
-	inputFile := flag.Arg(0)
-
-	err := execute(os.Stdout, *store, *password, inputFile)
+	err := execute(os.Stdin, os.Stdout, *store, *password)
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func execute(w io.Writer, store, password, filename string) error {
+func execute(in io.Reader, out io.Writer, store, password string) error {
 	resolve := func(filename string) string {
 		return filepath.Join(store, filename)
 	}
@@ -40,12 +39,17 @@ func execute(w io.Writer, store, password, filename string) error {
 		"secret":  secret,
 	}
 
-	t, err := template.New(filepath.Base(filename)).Funcs(funcMap).ParseFiles(filename)
+	bs, err := ioutil.ReadAll(in)
+	if err != nil {
+		return errors.Wrap(err, "could not read from input")
+	}
+
+	t, err := template.New("template").Funcs(funcMap).Parse(string(bs))
 	if err != nil {
 		return errors.Wrap(err, "could not parse template file")
 	}
 
-	return errors.Wrap(t.Execute(w, nil), "could not execute")
+	return errors.Wrap(t.Execute(out, nil), "could not execute")
 }
 
 func sh(cmdformat string, a ...interface{}) (string, error) {
