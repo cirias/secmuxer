@@ -1,6 +1,6 @@
 ---
 
-A simple tool to help manage credentials. Inspired by consul and vault.
+A simple tool to help manage credentials. Inspired by vault.
 
 ---
 
@@ -44,3 +44,14 @@ It's up to you how to store your secrets. They are just encrypted files. You can
 
 1. The built in `sh` func is very dangerous. Only use this tool when you know the content of input.
 2. To leverage simplicity, it runs `openssl` to decrypt the file. And you cannot change the encryption algorithm.
+
+## How did this come
+
+> Where do I put my credentials?
+
+That problem concerns me everytime I build a personal tool. 
+I want everything to be version controlled, even the script of deployment.
+And I also want my repo public.
+
+I know vault for a long time. It runs as a service and needs an server.
+But I just needs a simple cli tool. So I borrowed it's idea and made this.
