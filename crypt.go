@@ -20,8 +20,8 @@ const saltSize = 16 // bytes
 // Use pbkdf2 instead see:
 // https://github.com/riverrun/comeonin/wiki/Choosing-the-password-hashing-algorithm
 func deriveKey(passphrase string, salt []byte) *[32]byte {
-	dk := pbkdf2.Key([]byte(passphrase), salt, 4096, 32, sha1.New)
 	var key [32]byte
+	dk := pbkdf2.Key([]byte(passphrase), salt, 4096, len(key), sha1.New)
 	copy(key[:], dk)
 	return &key
 }
