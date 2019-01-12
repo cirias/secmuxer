@@ -5,16 +5,6 @@ import (
 	"testing"
 )
 
-/*
-func TestBcrypt(t *testing.T) {
-	hash, err := bcrypt.GenerateFromPassword([]byte("test"), 14)
-	fmt.Printf("Bcrypt hash size %d\nHash: [%s]", len(hash), hash)
-	if err != nil {
-		t.Error(err)
-	}
-}
-*/
-
 func TestCrypt(t *testing.T) {
 	plaintext := "HelloWorld"
 	passphrase := "secret"
