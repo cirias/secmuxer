@@ -31,7 +31,7 @@ func main() {
 			log.Fatalln(err)
 		}
 	} else {
-		log.Fatalf("Invalid command %s, only encrypt or extract is supported.", cmd)
+		log.Fatalf("Invalid command %s, only encrypt or extract is supported.", *cmd)
 	}
 }
 
